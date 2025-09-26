@@ -91,7 +91,7 @@ def sample_images(input, target, prediction, filename):
 
 
 # Testing settings
-parser = argparse.ArgumentParser(description='pix2pix-pytorch-implementation')
+parser = argparse.ArgumentParser(description='pytorch-implementation')
 parser.add_argument('--dataset', type=str, default="Vasculature")
 parser.add_argument('--cuda', type=str, default=True, help='use cuda?')
 parser.add_argument('--test_result', type=str, default="test_result")
