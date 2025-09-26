@@ -23,8 +23,7 @@ warnings.filterwarnings('ignore')
 
 # Training settings
 def parse_opts():
-    parser = argparse.ArgumentParser(description='pix2pix-pytorch-implementation')
-    # 加载恢复：继续断点训练/迁移学习； 如要迁移模型请设置为 True，从头训练则设置为 False
+    parser = argparse.ArgumentParser(description='pytorch-implementation')
     parser.add_argument('--RESUME', type=str, default=False, help='use transfer weight?')
     parser.add_argument('--dataset', type=str, default="Scatter_Vas")
     parser.add_argument('--train_out', type=str, default="train_out")
@@ -155,11 +154,9 @@ if __name__ == "__main__":
         update_learning_rate(net_g_scheduler, optimizer_g)
 
 
-        # 求平均损失，生成图像以查看效果
         net_g.eval()
         with torch.no_grad():
             G_loss.append(G_epoch_loss / count)
-            # 训练完一个Epoch,打印提示并绘制生成的图片
             elapsed_time = datetime.datetime.now() - start_time
             print("===> TRAIN: Epoch[{}]: Loss: {:.6f}  MAE: {:.6f}  Dice: {:.6f}  SSIM: {:.6f}  time: {}".
                   format(epoch+1, G_loss[-1], mean_mae_loss/count, 1-(mean_dice_loss/count), 1-(mean_ssim_loss/count), elapsed_time))
@@ -239,6 +236,7 @@ if __name__ == "__main__":
             plt.close()
 
     print('---------------Training is finished!!!---------------')
+
 
 
 
