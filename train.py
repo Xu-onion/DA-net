@@ -120,7 +120,7 @@ if __name__ == "__main__":
     opt.dataset = opt.dataset + '(UnetRCAB_ViT_Seg)'
     for epoch in range(opt.epoch_count, opt.nEpochs):
         # train------
-        mean_mae_loss = 0.0
+        mean_mse_loss = 0.0
         mean_ssim_loss = 0.0
         mean_dice_loss = 0.0
         G_epoch_loss = 0.0
@@ -134,10 +134,9 @@ if __name__ == "__main__":
             optimizer_g.zero_grad()
 
             # calculate loss
-            loss_g_l1 = criterionL1(fake_b, real_b)
-            mean_mae_loss += loss_g_l1
-
-            # loss_g_l2 = criterionMSE(fake_b, real_b)
+            loss_g_l2 = criterionMSE(fake_b, real_b)
+            mean_mse_loss += loss_g_l2
+            
             loss_g_ssim = 1 - ssim_loss(fake_b, real_b)
             mean_ssim_loss += loss_g_ssim
 
@@ -145,7 +144,7 @@ if __name__ == "__main__":
             loss_g_dice = 1 - dice_coeff(fake_b, real_b)
             mean_dice_loss += loss_g_dice
 
-            loss_g = (0.4 * loss_g_l1) + (0.1 * loss_g_ssim) + (0.5 * loss_g_dice)
+            loss_g = (0.4 * loss_g_l2) + (0.1 * loss_g_ssim) + (0.5 * loss_g_dice)
             loss_g.backward()
             optimizer_g.step()
 
@@ -158,8 +157,8 @@ if __name__ == "__main__":
         with torch.no_grad():
             G_loss.append(G_epoch_loss / count)
             elapsed_time = datetime.datetime.now() - start_time
-            print("===> TRAIN: Epoch[{}]: Loss: {:.6f}  MAE: {:.6f}  Dice: {:.6f}  SSIM: {:.6f}  time: {}".
-                  format(epoch+1, G_loss[-1], mean_mae_loss/count, 1-(mean_dice_loss/count), 1-(mean_ssim_loss/count), elapsed_time))
+            print("===> TRAIN: Epoch[{}]: Loss: {:.6f}  MSE: {:.6f}  Dice: {:.6f}  SSIM: {:.6f}  time: {}".
+                  format(epoch+1, G_loss[-1], mean_mse_loss/count, 1-(mean_dice_loss/count), 1-(mean_ssim_loss/count), elapsed_time))
 
             # test
             all_mae = 0.0
@@ -236,6 +235,7 @@ if __name__ == "__main__":
             plt.close()
 
     print('---------------Training is finished!!!---------------')
+
 
 
 
